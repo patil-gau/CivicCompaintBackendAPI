@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ck9f+fj&k-04em0+=&ia9r(80ydl*9^%^%y%t6*k4d($ic&-%a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 
 # Application definition
@@ -151,7 +151,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
 
-ALLOWED_HOSTS = ['civic-complaint.herokuapp.com']
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -163,6 +162,6 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'users.Users'
 
- 
-prod_db  =  dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(prod_db)
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
