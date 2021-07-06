@@ -30,14 +30,13 @@ def AddUser(request):
 
 
 @api_view(['POST'])
-def DeleteUser(request):
-    email = request.data['email']
-    try:
-        user = Users.objects.get(email=email)
-        user.delete()
-        return JsonResponse({"Message": "user " + email + " is successfully deleted"})
-    except:
-        return JsonResponse({"Message": "user" + email + " not found"})
+def DeleteUser(request,id):
+        try:
+            user = Users.objects.get(id=id)
+            user.delete()
+            return JsonResponse({"Message": "user " + id + " is successfully deleted"})
+        except:
+            return JsonResponse({"Message": "user" + id + " not found"})
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
