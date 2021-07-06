@@ -12,6 +12,6 @@ urlpatterns = [
     path('api/token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('adduser/',views.AddUser,name="add_user"),
-    path('delete/',views.DeleteUser),
+    path('delete/<id>/',views.DeleteUser)
 
 ]

@@ -9,12 +9,23 @@ from django.http import HttpResponseBadRequest
 
 # Create your views here.
 
+
 @api_view(['GET'])
 def AllComplaints(request):
     if request.method == 'GET':
         complaints = Complaints.objects.all()
         serializer = ComplaintSerializer(complaints,many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def AllOfficerComplaints(request, id):
+    if request.method == 'GET':
+        officer = Users.objects.get(id=id)
+        total_complaints = Complaints.objects.filter(city_id=officer.city_id)
+        serializer = ComplaintSerializer(total_complaints, many=True)
+        return Response(serializer.data)
+
 
 @api_view(['GET'])
 def AdminHome(request):
@@ -50,6 +61,40 @@ def AdminHome(request):
     
     return HttpResponseBadRequest    
 
+
+@api_view(['GET'])
+def OfficerHome(request, id):
+    if request.method == 'GET':
+        officer = Users.objects.get(id=id)
+        print(officer.city_id)
+        try:
+            officer_total = Complaints.objects.filter(city_id=officer.city_id).count()
+            officer_total_pending_issues = Complaints.objects.filter(city_id=officer.city_id,
+                                                                     progress__lt="100").count()
+            officer_total_resolved_issues = Complaints.objects.filter(city_id=officer.city_id,
+                                                                      status="completed").count()
+            users_under_officer = Users.objects.filter(city_id=officer.city_id).distinct().count()
+            users_under_officer -= 1
+            jsonResponse = {
+                "user_under_officers": users_under_officer,
+                "total_complaints": officer_total,
+                "total_complaints_pending": officer_total_pending_issues,
+                "total_complaints_resolved": officer_total_resolved_issues
+            }
+            return Response(jsonResponse)
+
+        except Exception as e:
+            jsonResponse = {
+                "user_under_officers": "",
+                "total_complaints": "",
+                "total_complaints_pending": "",
+                "total_complaints_resolved": ""
+            }
+            print(e)
+            return Response(jsonResponse)
+    return HttpResponseBadRequest
+
+
 @api_view(['POST'])
 def AddComplaint(request):
     if request.method == 'POST':
@@ -60,4 +105,40 @@ def AddComplaint(request):
         else:
           return Response(serializer.errors)  
 
+    return HttpResponseBadRequest()
+
+
+@api_view(['GET'])
+def LatestComplaints(request):
+    if request.method == 'GET':
+        complaints = Complaints.objects.order_by('-comp_id')[:2]
+        serializer = ComplaintSerializer(complaints, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+def PendingComplaints(request):
+    if request.method == 'GET':
+        pending_complaints = Complaints.objects.filter(status="pending")
+        serializer = ComplaintSerializer(pending_complaints, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+def ResolvedComplaints(request):
+    if request.method == 'GET':
+        pending_complaints = Complaints.objects.filter(status="completed")
+        serializer = ComplaintSerializer(pending_complaints, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['POST'])
+def DeleteComplaints(request, comp_id):
+    if request.method == 'POST':
+        try:
+            complaint = Complaints.objects.get(comp_id=comp_id)
+            complaint.delete()
+            return Response({"message": "complaint deleted succesfully"})
+        except:
+            return Response({"message": "comlpaint not found"})
     return HttpResponseBadRequest()
