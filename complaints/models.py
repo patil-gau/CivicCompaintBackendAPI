@@ -15,7 +15,9 @@ class Complaints(models.Model):
     status = models.CharField(max_length=20,default="not started")
     action_taken = models.CharField(max_length=90,default="none")
     progress = models.IntegerField(default=0)
-    comp_date = models.DateField(default=datetime.now().date)
+    comp_date = models.DateField(auto_now=True,editable=False)
+    comp_image = models.ImageField(upload_to="images",null=True,blank=True)
+    comp_video = models.FileField(upload_to="videos",null=True,blank=True)
     
     class Meta: 
         db_table = 'complaints'  
