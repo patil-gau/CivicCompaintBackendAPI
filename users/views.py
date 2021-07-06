@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.http import HttpResponseBadRequest,JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from .serializers import UserSerializer
 from rest_framework.renderers import JSONRenderer
 from django.contrib.auth.models import update_last_login
@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
+from .models import Users
 
 
 # Create your views here.
@@ -20,21 +20,25 @@ def AddUser(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({"Message":"User Registered Successfully"})
+            return JsonResponse({"Message": "User Registered Successfully"})
         else:
             print(serializer.errors)
             json_data = JsonResponse(serializer.errors)
-            return Response(json_data)    
-    
+            return Response(json_data)
+
     return HttpResponseBadRequest
 
 
+@api_view(['POST'])
+def DeleteUser(request):
+    email = request.data['email']
+    try:
+        user = Users.objects.get(email=email)
+        user.delete()
+        return JsonResponse({"Message": "user " + email + " is successfully deleted"})
+    except:
+        return JsonResponse({"Message": "user" + email + " not found"})
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
-
-
-
-
-   
