@@ -1,1 +1,0 @@
-web: gunicorn civic_complaint.wsgi --log-file -
