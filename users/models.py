@@ -57,9 +57,10 @@ class Users(AbstractUser):
     state_id = models.ForeignKey('state_city.States',db_column='state_id',on_delete=models.CASCADE,default=1)
     country = models.CharField(max_length=30)
     role = models.CharField(max_length=20)
+    adhar = models.BigIntegerField(default=None, unique=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone','role']
+    REQUIRED_FIELDS = ['phone','role','adhar']
     
  
 

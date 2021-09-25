@@ -11,6 +11,9 @@ urlpatterns = [
     path('allcomplaints/officer/<id>/',views.AllOfficerComplaints,name="total_officer_complaints"),
     path('pending/complaints/',views.PendingComplaints,name="pending_complaints"),
     path('resolved/complaints/',views.ResolvedComplaints,name="resolved_complaints"),
-    path('delete/<comp_id>/',views.DeleteComplaints,name="delete_complaints")
+    path('delete/<comp_id>/',views.DeleteComplaints,name="delete_complaints"),
+    path('updatecomplaint/',views.UpdateComplaints,name="update_complaints"),
+    path('resolvedcomplaints/<int:pk>',views.ResolvedComplaintsOfficer,name="update_complaints")
+
 ]
 

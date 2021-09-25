@@ -119,7 +119,7 @@ def LatestComplaints(request):
 @api_view(['GET'])
 def PendingComplaints(request):
     if request.method == 'GET':
-        pending_complaints = Complaints.objects.filter(status="pending")
+        pending_complaints = Complaints.objects.filter(progress__lt = 100)
         serializer = ComplaintSerializer(pending_complaints, many=True)
         return Response(serializer.data)
 
@@ -142,3 +142,26 @@ def DeleteComplaints(request, comp_id):
         except:
             return Response({"message": "comlpaint not found"})
     return HttpResponseBadRequest()
+
+@api_view(['GET'])
+def ResolvedComplaintsOfficer(request,pk):
+    if request.method == 'GET':
+        pending_complaints = Complaints.objects.filter(progress=100,comp_by=pk)
+        serializer = ComplaintSerializer(pending_complaints, many=True)
+        return Response(serializer.data)
+
+@api_view(['POST'])
+def UpdateComplaints(request):
+    if request.method == 'POST':
+        status = request.data['status']
+        progress = request.data['progress']
+        action_taken = request.data['action_taken']
+        complaint_id = request.data['complaint_id']
+        try:
+            Complaints.objects.filter(comp_id=complaint_id).update(status=status, progress=progress, action_taken=action_taken)
+            return Response({"message": "complaint updated succesfully","status":1})
+        except Exception as e:
+            print(e)
+            return Response({"message": "comlpaint not found","status":0})
+    return HttpResponseBadRequest()
+
