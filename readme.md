@@ -2,7 +2,7 @@
 1. Following softwares but be installed before before.
     1. Xammp
     2. Git
-2. open cmd and type git clone https://github.com/letzzBuild/civic-complaint-backend.git
+2. open cmd and type git clone https://github.com/patil-gau/CivicCompaintBackendAPI.git
 3. after downloading the project type cd civic-complaint-backend  
 4. type pip install -r requirements.txt
 5. Start mysql from xampp control panel (seach on windows search bar)

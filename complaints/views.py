@@ -115,6 +115,13 @@ def LatestComplaints(request):
         serializer = ComplaintSerializer(complaints, many=True)
         return Response(serializer.data)
 
+@api_view(['GET'])
+def LatestComplaintsCitizen(request,pk):
+    if request.method == 'GET':
+        complaints = Complaints.objects.filter(comp_id=pk).order_by('-comp_id')[:2]
+        serializer = ComplaintSerializer(complaints, many=True)
+        return Response(serializer.data)
+
 
 @api_view(['GET'])
 def PendingComplaints(request):
@@ -122,6 +129,14 @@ def PendingComplaints(request):
         pending_complaints = Complaints.objects.filter(progress__lt = 100)
         serializer = ComplaintSerializer(pending_complaints, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def PendingComplaintsOfficer(request,pk):
+    if request.method == 'GET':
+        pending_complaints = Complaints.objects.filter(progress__lt = 100,city_id=pk)
+        serializer = ComplaintSerializer(pending_complaints, many=True)
+        return Response(serializer.data)        
 
 
 @api_view(['GET'])
@@ -146,7 +161,7 @@ def DeleteComplaints(request, comp_id):
 @api_view(['GET'])
 def ResolvedComplaintsOfficer(request,pk):
     if request.method == 'GET':
-        pending_complaints = Complaints.objects.filter(progress=100,comp_by=pk)
+        pending_complaints = Complaints.objects.filter(progress=100,city_id=pk)
         serializer = ComplaintSerializer(pending_complaints, many=True)
         return Response(serializer.data)
 

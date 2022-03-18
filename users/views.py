@@ -32,10 +32,11 @@ def AddUser(request):
 def DeleteUser(request,pk):
         try:
             user = Users.objects.get(id=pk)
+            username = user.name
             user.delete()
-            return JsonResponse({"Message": "user " + str(pk) + " is successfully deleted"})
+            return JsonResponse({"name":username,'status':1})
         except:
-            return JsonResponse({"Message": "user" + str(pk) + " not found"})
+            return JsonResponse({"Message": "user" + str(pk) + " not found",'status':0})
 
 @api_view(['GET'])
 def AllUsers(request):
